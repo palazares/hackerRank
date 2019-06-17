@@ -5,17 +5,13 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 public class Triplets {
-
     static class Triplet {
         long base;
         int rPower;
-        int index;
-        int predecessors;
 
-        Triplet(long base, int rPower, int index) {
+        Triplet(long base, int rPower) {
             this.base = base;
             this.rPower = rPower;
-            this.index = index;
         }
     }
 
@@ -23,16 +19,16 @@ public class Triplets {
 
     // Complete the countTriplets function below.
     private static long countTriplets(List<Long> arr, long r) {
-        Map<Long, ArrayList<Triplet>> triplets = new HashMap<>();
+        Map<Long, List<Triplet>> triplets = new HashMap<>();
 
-        for (int i = 0; i < arr.size(); i ++) {
-            Triplet triplet = getTriplet(arr.get(i), r, i);
-            ArrayList<Triplet> listForBase = triplets.computeIfAbsent(triplet.base, (k) -> new ArrayList<>());
+        for (Long aLong : arr) {
+            Triplet triplet = getTriplet(aLong, r);
+            List<Triplet> listForBase = triplets.computeIfAbsent(triplet.base, (k) -> new ArrayList<>());
             listForBase.add(triplet);
         }
 
         long totalNumTriplets = 0;
-        for (Map.Entry<Long, ArrayList<Triplet>> entry : triplets.entrySet()) {
+        for (Map.Entry<Long, List<Triplet>> entry : triplets.entrySet()) {
             int size = entry.getValue().size();
             if (size < 3) {
                 continue;
@@ -40,10 +36,10 @@ public class Triplets {
             Map<Integer, Integer> numberOfPowers = new HashMap<>();
             for (int i = size - 1; i >= 0; i--) {
                 Triplet firstTriplet = entry.getValue().get(i);
-                int power = firstTriplet.rPower;
-                numberOfPowers.merge(power, 1, Integer::sum);
-                Integer nextPower = numberOfPowers.get(power + 1);
-                Integer nextNextPower = numberOfPowers.get(power + 2);
+                int firstPower = firstTriplet.rPower;
+                numberOfPowers.merge(firstPower, 1, Integer::sum);
+                Integer nextPower = numberOfPowers.get(firstPower + 1);
+                Integer nextNextPower = numberOfPowers.get(firstPower + 2);
                 if(nextPower != null && nextNextPower != null){
                     totalNumTriplets += nextPower * nextNextPower;
                 }
@@ -52,10 +48,10 @@ public class Triplets {
         return totalNumTriplets;
     }
 
-    private static Triplet getTriplet(Long number, long r, int index) {
+    private static Triplet getTriplet(Long number, long r) {
         Triplet cached = valuesCache.get(number);
         if(cached != null){
-            return new Triplet(cached.base, cached.rPower, index);
+            return new Triplet(cached.base, cached.rPower);
         }
         long base = number;
         int rPower = 0;
@@ -64,12 +60,12 @@ public class Triplets {
             base /= r;
             cached = valuesCache.get(base);
             if(cached != null){
-                Triplet triplet = new Triplet(cached.base, cached.rPower + rPower, index);
+                Triplet triplet = new Triplet(cached.base, cached.rPower + rPower);
                 valuesCache.put(number, triplet);
                 return triplet;
             }
         }
-        Triplet triplet = new Triplet(base, rPower, index);
+        Triplet triplet = new Triplet(base, rPower);
         valuesCache.put(number, triplet);
         return triplet;
     }
