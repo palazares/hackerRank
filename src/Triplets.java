@@ -57,18 +57,23 @@ public class Triplets {
     private static Triplet getTriplet(Long number, long r, int index) {
         Triplet cached = valuesCache.get(number);
         if(cached != null){
-            return cached;
+            return new Triplet(cached.base, cached.rPower, index);
         }
+        long base = number;
         int rPower = 0;
-        while(number % r == 0){
+        while(base % r == 0){
             rPower++;
-            number /= r;
-            cached = valuesCache.get(number);
+            base /= r;
+            cached = valuesCache.get(base);
             if(cached != null){
-                new Triplet(cached.base, cached.rPower + rPower, index);
+                Triplet triplet = new Triplet(cached.base, cached.rPower + rPower, index);
+                valuesCache.put(number, triplet);
+                return triplet;
             }
         }
-        return new Triplet(number, rPower, index);
+        Triplet triplet = new Triplet(base, rPower, index);
+        valuesCache.put(number, triplet);
+        return triplet;
     }
 
     public static void main(String[] args) throws IOException {
