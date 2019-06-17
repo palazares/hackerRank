@@ -19,8 +19,10 @@ public class Triplets {
         }
     }
 
+    private static Map<Long, Triplet> valuesCache = new HashMap<>();
+
     // Complete the countTriplets function below.
-    static long countTriplets(List<Long> arr, long r) {
+    private static long countTriplets(List<Long> arr, long r) {
         Map<Long, ArrayList<Triplet>> triplets = new HashMap<>();
 
         for (int i = 0; i < arr.size(); i ++) {
@@ -32,7 +34,7 @@ public class Triplets {
         long totalNumTriplets = 0;
         for (Map.Entry<Long, ArrayList<Triplet>> entry : triplets.entrySet()) {
             int size = entry.getValue().size();
-            if (size <= 2) {
+            if (size < 3) {
                 continue;
             }
             for (int i = size - 1; i > 0; i--) {
@@ -52,11 +54,19 @@ public class Triplets {
         return totalNumTriplets;
     }
 
-    static Triplet getTriplet(Long number, long r, int index) {
+    private static Triplet getTriplet(Long number, long r, int index) {
+        Triplet cached = valuesCache.get(number);
+        if(cached != null){
+            return cached;
+        }
         int rPower = 0;
         while(number % r == 0){
             rPower++;
             number /= r;
+            cached = valuesCache.get(number);
+            if(cached != null){
+                new Triplet(cached.base, cached.rPower + rPower, index);
+            }
         }
         return new Triplet(number, rPower, index);
     }
