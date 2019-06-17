@@ -37,19 +37,17 @@ public class Triplets {
             if (size < 3) {
                 continue;
             }
-            for (int i = size - 1; i > 0; i--) {
+            Map<Integer, Integer> numberOfPowers = new HashMap<>();
+            for (int i = size - 1; i >= 0; i--) {
                 Triplet firstTriplet = entry.getValue().get(i);
-                int firstPower = firstTriplet.rPower;
-                for (int j = i - 1; j >= 0; j--) {
-                    Triplet secondTriplet = entry.getValue().get(j);
-                    int secondPower = secondTriplet.rPower;
-                    if(secondPower == firstPower - 1){
-                        secondTriplet.predecessors++;
-                        totalNumTriplets += firstTriplet.predecessors;
-                    }
+                int power = firstTriplet.rPower;
+                numberOfPowers.merge(power, 1, Integer::sum);
+                Integer nextPower = numberOfPowers.get(power + 1);
+                Integer nextNextPower = numberOfPowers.get(power + 2);
+                if(nextPower != null && nextNextPower != null){
+                    totalNumTriplets += nextPower * nextNextPower;
                 }
             }
-
         }
         return totalNumTriplets;
     }
