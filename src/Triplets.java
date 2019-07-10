@@ -34,13 +34,17 @@ public class Triplets {
                 continue;
             }
             Map<Integer, Integer> numberOfPowers = new HashMap<>();
-            for (int i = size - 1; i >= 0; i--) {
+            Map<Integer, Integer> numberOfTuples = new HashMap<>();
+            for (int i = size - 1; i >= 0; i-- ) {
                 int power = entry.getValue().get(i).rPower;
                 numberOfPowers.merge(power, 1, Integer::sum);
-                Integer nextPower = numberOfPowers.get(power + 1);
-                Integer nextNextPower = numberOfPowers.get(power + 2);
-                if(nextPower != null && nextNextPower != null){
-                    totalNumTriplets += nextPower * nextNextPower;
+                Integer powerPlus1 = numberOfPowers.get(power + 1);
+                if(powerPlus1 != null) {
+                    numberOfTuples.merge(power, powerPlus1, Integer::sum);
+                    Integer tuplesPlus1 = numberOfTuples.get(power + 1);
+                    if(tuplesPlus1 != null){
+                        totalNumTriplets += tuplesPlus1;
+                    }
                 }
             }
         }
