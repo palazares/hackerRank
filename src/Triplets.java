@@ -90,7 +90,7 @@ public class Triplets {
         return totalSum;
     }
 
-    private static long countAriphmProgrSum(int n){
+    private static long countAriphmProgrSum(long n){
         return n*(n+1) / 2;
     }
 
