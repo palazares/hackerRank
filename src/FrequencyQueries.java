@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 
 public class FrequencyQueries {
 
-    // Complete the freqQuery function below.
     static List<Integer> freqQuery(List<List<Integer>> queries) {
         Map<Integer, Integer> valueToOccur = new HashMap<>();
         Map<Integer, Integer> occurToValuesNum = new HashMap<>();
@@ -26,30 +25,33 @@ public class FrequencyQueries {
             Integer value = query.get(1);
 
             if(request.equals(1)){
-                final Integer resultOccur = valueToOccur.merge(value, 1, Integer::sum);
-                occurToValuesNum.merge(resultOccur, 1, Integer::sum);
-                final Integer previousOccurResult = occurToValuesNum.get(resultOccur - 1);
-                if(previousOccurResult != null){
-                    occurToValuesNum.put(resultOccur - 1, previousOccurResult - 1);
+                final Integer newOccurrences = valueToOccur.merge(value, 1, Integer::sum);
+                occurToValuesNum.merge(newOccurrences, 1, Integer::sum);
+                final Integer valuesNumberForOldOccurrences = occurToValuesNum.get(newOccurrences - 1);
+                if(valuesNumberForOldOccurrences != null && valuesNumberForOldOccurrences > 0 ){
+                    occurToValuesNum.put(newOccurrences - 1, valuesNumberForOldOccurrences - 1);
                 }
 
             }
             else if (request.equals(2)) {
-                final Integer currentOccur = valueToOccur.get(value);
-                if(currentOccur != null){
-                    valueToOccur.put(value, currentOccur - 1);
-                    final Integer oldOccur = occurToValuesNum.get(currentOccur);
-                    if(oldOccur != null && oldOccur > 0){
-                        occurToValuesNum.put(oldOccur, currentOccur + 1);
+                final Integer oldOccurrences = valueToOccur.get(value);
+                if(oldOccurrences != null && oldOccurrences > 0){
+                    valueToOccur.put(value, oldOccurrences - 1);
+                    final Integer valuesNumberForOldOccurrences = occurToValuesNum.get(oldOccurrences);
+                    if(valuesNumberForOldOccurrences != null && valuesNumberForOldOccurrences > 0){
+                        occurToValuesNum.put(oldOccurrences, valuesNumberForOldOccurrences - 1);
                     }
 
-                    if(currentOccur - 1 > 0) {
-                        occurToValuesNum.merge(currentOccur - 1, 1, Integer::sum);
+                    if(oldOccurrences > 1) {
+                        occurToValuesNum.merge(oldOccurrences - 1, 1, Integer::sum);
                     }
                 }
             }
             else if (request.equals(3)) {
-                int size = occurToValues.computeIfAbsent(value, (k) -> new ArrayList<>()).size();
+                Integer size = occurToValuesNum.get(value);
+                if(size == null){
+                    size = 0;
+                }
                 if(size > 0){
                     size = 1;
                 }
