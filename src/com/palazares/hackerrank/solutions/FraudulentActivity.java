@@ -1,55 +1,50 @@
 package com.palazares.hackerrank.solutions;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 public class FraudulentActivity {
     static int activityNotifications(int[] expenditure, int d) {
-        int[] window = Arrays.copyOf(expenditure, d);
-        Arrays.sort(window);
+        PriorityQueue<Integer> greater = new PriorityQueue<>();
+        PriorityQueue<Integer> less = new PriorityQueue<>(Collections.reverseOrder());
+
         int fraudNotifications = 0;
 
-        for (int i = d; i < expenditure.length; i++) {
+        for (int i = 0; i < expenditure.length; i++) {
             final int currentVal = expenditure[i];
-            final double median = getMedian(window);
-            if (currentVal >= 2 * median) {
-                fraudNotifications++;
+            if (i >= d) {
+                Integer median2x = greater.size() == less.size() ? greater.peek() + less.peek() : 2 * greater.peek();
+                if (currentVal >= median2x) {
+                    fraudNotifications++;
+                }
+                int elemToRemove = expenditure[i - d];
+                if (greater.peek() <= elemToRemove) {
+                    greater.remove(elemToRemove);
+                } else {
+                    less.remove(elemToRemove);
+                }
+                rebalance(greater, less);
             }
-            updateWindow(window, expenditure[i - d], currentVal);
+
+            if (greater.size() == 0 || greater.peek() <= currentVal) {
+                greater.add(currentVal);
+            } else {
+                less.add(currentVal);
+            }
+            rebalance(greater, less);
         }
 
         return fraudNotifications;
     }
 
-    private static double getMedian(int[] arr) {
-        int midIndex = arr.length / 2;
-        if (arr.length % 2 == 1) {
-            return arr[midIndex];
+    static void rebalance(PriorityQueue<Integer> greater, PriorityQueue<Integer> less) {
+        if (greater.size() > less.size() + 1) {
+            less.add(greater.poll());
+        } else if (greater.size() < less.size()) {
+            greater.add(less.poll());
         }
-
-        return ((double) arr[midIndex] + arr[midIndex - 1]) / 2.0;
-    }
-
-    private static void updateWindow(int[] window, int oldElem, int newElem) {
-        final int oldIndex = binarySearch(window, oldElem, 0, window.length - 1);
-        window[oldIndex] = newElem;
-        Arrays.sort(window);
-    }
-
-    private static int binarySearch(int[] arr, int value, int low, int high) {
-        if (low > high) {
-            return -1;
-        }
-        int mid = high - low >>> 1;
-        int midValue = arr[mid];
-        if (midValue == value) {
-            return mid;
-        }
-        if (value < midValue) {
-            return binarySearch(arr, value, low, mid - 1);
-        }
-        return binarySearch(arr, value, mid + 1, high);
     }
 
     private static final Scanner scanner = new Scanner(System.in);
