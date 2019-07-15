@@ -1,5 +1,4 @@
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,19 +9,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class FrequencyQueries {
 
-    static List<Integer> freqQuery(List<List<Integer>> queries) {
+    static List<Integer> freqQuery(int[][] queries) {
         Map<Integer, Integer> valueToOccur = new HashMap<>();
         Map<Integer, Integer> occurToValuesNum = new HashMap<>();
 
         List<Integer> results = new ArrayList<>();
-        for(List<Integer> query : queries){
-            Integer request = query.get(0);
-            Integer value = query.get(1);
+        for(int[] query : queries){
+            Integer request = query[0];
+            Integer value = query[1];
 
             if(request.equals(1)){
                 final Integer newOccurrences = valueToOccur.merge(value, 1, Integer::sum);
@@ -49,13 +46,7 @@ public class FrequencyQueries {
             }
             else if (request.equals(3)) {
                 Integer size = occurToValuesNum.get(value);
-                if(size == null){
-                    size = 0;
-                }
-                if(size > 0){
-                    size = 1;
-                }
-                results.add(size);
+                results.add(size == null || size == 0 ? 0 : 1);
             }
         }
 
@@ -63,36 +54,27 @@ public class FrequencyQueries {
     }
 
     public static void main(String[] args) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(".\\resources\\frequencyQueriesInput\\act.txt"));
+        try (BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(System.in))) {
 
-        int q = Integer.parseInt(bufferedReader.readLine().trim());
+            int q = Integer.parseInt(bufferedReader.readLine().trim());
+            int[][] queries = new int[q][2];
 
-        List<List<Integer>> queries = new ArrayList<>();
-
-        IntStream.range(0, q).forEach(i -> {
-            try {
-                queries.add(
-                        Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
-                                .map(Integer::parseInt)
-                                .collect(toList())
-                );
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
+            for (int i = 0; i < q; i++) {
+                String[] query = bufferedReader.readLine().split(" ");
+                queries[i][0] = Integer.parseInt(query[0]);
+                queries[i][1] = Integer.parseInt(query[1]);
             }
-        });
 
-        List<Integer> ans = freqQuery(queries);
+            List<Integer> ans = freqQuery(queries);
 
-        bufferedWriter.write(
-                ans.stream()
-                        .map(Object::toString)
-                        .collect(joining("\n"))
-                        + "\n"
-        );
+            try (BufferedWriter bufferedWriter = new BufferedWriter(
+                    new FileWriter(".\\resources\\frequencyQueriesInput\\1_act.txt"))) {
 
-        bufferedReader.close();
-        bufferedWriter.close();
+                bufferedWriter.write(ans.stream().map(Object::toString)
+                        .collect(joining("\n")) + "\n");
+            }
+        }
     }
 }
 
