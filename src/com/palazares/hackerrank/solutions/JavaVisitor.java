@@ -1,3 +1,5 @@
+package com.palazares.hackerrank.solutions;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -67,7 +69,9 @@ class TreeLeaf extends Tree {
 abstract class TreeVis
 {
     public abstract int getResult();
+
     public abstract void visitNode(TreeNode node);
+
     public abstract void visitLeaf(TreeLeaf leaf);
 
 }

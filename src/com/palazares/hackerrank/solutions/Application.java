@@ -1,3 +1,5 @@
+package com.palazares.hackerrank.solutions;
+
 public class Application {
     public static void main(String[] args) {
         String s = "epsxyyflvrrrxzvnoenvpegvuonodjoxfwdmcvwctmekpsnamchznsoxaklzjgrqruyzavshfbmuhdwwmpbkwcuomqhiyvuztwvq";
@@ -12,8 +14,7 @@ public class Application {
         String residualString = s.substring(0, residual);
         int mainStringAs = getAsFromString(s);
         int residualStringAs = getAsFromString(residualString);
-        long totalAs = mainStringAs * repeatedCount + residualStringAs;
-        return totalAs;
+        return mainStringAs * repeatedCount + residualStringAs;
     }
 
     private static int getAsFromString(String s) {

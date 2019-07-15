@@ -1,3 +1,5 @@
+package com.palazares.hackerrank.solutions;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -6,7 +8,7 @@ import java.util.Scanner;
 public class ArraySwap {
 
     // Complete the rotLeft function below.
-    static int[] rotLeft(int[] a, int d) {
+    private static int[] rotLeft(int[] a, int d) {
         int len = a.length;
         int swapCur;
         int swapNext;
@@ -69,14 +71,5 @@ public class ArraySwap {
         bufferedWriter.close();
 
         scanner.close();
-    }
-
-    private static int find(int[] a, int target)
-    {
-        for (int i = 0; i < a.length; i++)
-            if (a[i] == target)
-                return i;
-
-        return -1;
     }
 }

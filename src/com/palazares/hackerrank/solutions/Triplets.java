@@ -1,8 +1,16 @@
-import java.io.*;
-import java.util.*;
-import java.util.stream.Stream;
+package com.palazares.hackerrank.solutions;
 
 import static java.util.stream.Collectors.toList;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 public class Triplets {
     private static class Number {
@@ -83,7 +91,7 @@ public class Triplets {
             vals.merge(aLong, 1, Integer::sum);
             final Integer currentNumberOfVals = vals.get(aLong);
             if(currentNumberOfVals > 2){
-                totalSum += countAriphmProgrSum(currentNumberOfVals - 2);
+                totalSum += countAriphmProgrSum(currentNumberOfVals - 2L);
             }
         }
 
@@ -99,8 +107,6 @@ public class Triplets {
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(".\\resources\\tripletsInput\\act.txt"));
 
         String[] nr = bufferedReader.readLine().replaceAll("\\s+$", "").split(" ");
-
-        int n = Integer.parseInt(nr[0]);
 
         long r = Long.parseLong(nr[1]);
 

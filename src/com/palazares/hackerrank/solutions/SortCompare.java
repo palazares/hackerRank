@@ -1,4 +1,8 @@
-import java.util.*;
+package com.palazares.hackerrank.solutions;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Scanner;
 
 class Player {
     String name;

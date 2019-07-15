@@ -1,3 +1,5 @@
+package com.palazares.hackerrank.solutions;
+
 import static java.util.stream.Collectors.joining;
 
 import java.io.BufferedReader;
@@ -29,8 +31,7 @@ public class FrequencyQueries {
                     occurToValuesNum.put(newOccurrences - 1, valuesNumberForOldOccurrences - 1);
                 }
 
-            }
-            else if (request.equals(2)) {
+            } else if (request.equals(2)) {
                 final Integer oldOccurrences = valueToOccur.get(value);
                 if(oldOccurrences != null && oldOccurrences > 0){
                     valueToOccur.put(value, oldOccurrences - 1);
@@ -43,8 +44,7 @@ public class FrequencyQueries {
                         occurToValuesNum.merge(oldOccurrences - 1, 1, Integer::sum);
                     }
                 }
-            }
-            else if (request.equals(3)) {
+            } else if (request.equals(3)) {
                 Integer size = occurToValuesNum.get(value);
                 results.add(size == null || size == 0 ? 0 : 1);
             }
