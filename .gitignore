@@ -1,4 +1,4 @@
 /workspace.xml
 /sonarlint/*
 *.class
-out/
+/out/
