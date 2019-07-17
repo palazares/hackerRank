@@ -27,9 +27,6 @@
         </value>
       </option>
     </JavaCodeStyleSettings>
-    <ScalaCodeStyleSettings>
-      <option name="MULTILINE_STRING_SUPPORT" value="-1" />
-    </ScalaCodeStyleSettings>
     <XML>
       <option name="XML_TEXT_WRAP" value="0" />
     </XML>

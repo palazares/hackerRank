@@ -90,13 +90,54 @@ public class StringManipulations {
         return result;
     }
 
+    static long substrCount(int n, String s) {
+        final char[] chars = s.toCharArray();
+        long numberOdIdealStrings = n;
+        for (int i = 0; i < n - 1; i++) {
+            if (chars[i] == chars[i + 1]) {
+                long similiars = countSimiliars(i, chars);
+                numberOdIdealStrings += similiars * (similiars + 1) / 2;
+                i += similiars;
+            }
+            if (i + 1 < chars.length && i > 0) {
+                numberOdIdealStrings += countPolyndroms(i, chars);
+            }
+        }
+
+        return numberOdIdealStrings;
+    }
+
+    private static long countPolyndroms(int i, char[] chars) {
+        int count = 0;
+        char similiar = chars[i + 1];
+        int offset = 1;
+        while (i + offset < chars.length && i - offset >= 0 && similiar == chars[i - offset] && similiar == chars[i + offset]) {
+            offset++;
+            count++;
+        }
+        return count;
+    }
+
+    static long countSimiliars(int i, char[] chars) {
+        int count = 0;
+        while (i + 1 < chars.length && chars[i + 1] == chars[i]) {
+            i++;
+            count++;
+        }
+        return count;
+    }
+
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
 
+        int n = scanner.nextInt();
+        scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+
         String s = scanner.nextLine();
 
-        String result = isValid(s);
+        //152076
+        long result = substrCount(n, s);
 
         System.out.println(result);
     }
