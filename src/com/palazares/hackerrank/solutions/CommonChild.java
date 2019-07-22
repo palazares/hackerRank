@@ -1,101 +1,34 @@
 package com.palazares.hackerrank.solutions;
 
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
-
 public class CommonChild {
 
-    static int longestChildLength = 0;
-    static String longestChild = "";
-    static char[] biggerStringChars;
-    static char[] lesserStringChars;
-    static Set<String> checked;
-
     static int commonChild(String s1, String s2) {
+        int maxLength = 0;
+        int[][] countMatrix = new int[s1.length() + 1][s2.length() + 1];
 
-        checked = new HashSet<>();
-        longestChildLength = 0;
+        char[] s1Chars = s1.toCharArray();
+        char[] s2Chars = s2.toCharArray();
 
-        final Set<Character> string1Chars = getStringChars(s1);
-        final Set<Character> string2Chars = getStringChars(s2);
-
-        final String newS1 = removeCharsFromString(string2Chars, s1);
-        final String newS2 = removeCharsFromString(string1Chars, s2);
-
-        if (newS1.isEmpty() || newS2.isEmpty()) {
-            return 0;
-        }
-
-        String biggerString = newS1.length() > newS2.length() ? newS1 : newS2;
-        String lesserString = newS1.length() <= newS2.length() ? newS1 : newS2;
-
-        lesserStringChars = lesserString.toCharArray();
-        biggerStringChars = biggerString.toCharArray();
-
-        checkString("", 0, 0);
-
-        System.out.println(longestChild);
-
-        return longestChildLength;
-    }
-
-    static void checkString(String s, int indexRestItself, int indexRestCompare) {
-        if (checked.contains(s)) {
-            return;
-        }
-        checked.add(s);
-        if (s.length() > longestChildLength) {
-            longestChildLength = s.length();
-            longestChild = s;
-            if (longestChildLength >= lesserStringChars.length) {
-                return;
+        for(int i = 1; i <= s1.length(); i++){
+            for(int j = 1; j <= s2.length(); j++){
+                if (s1Chars[i-1] == s2Chars[j-1]){
+                    countMatrix[i][j] =  countMatrix[i-1][j-1] + 1;
+                    if(countMatrix[i][j] > maxLength){
+                        maxLength = countMatrix[i][j];
+                    }
+                }
+                else {
+                    countMatrix[i][j] = countMatrix[i-1][j] > countMatrix[i][j-1] ? countMatrix[i-1][j] : countMatrix[i][j-1];
+                }
             }
         }
 
-        if (indexRestItself >= lesserStringChars.length || indexRestCompare >= biggerStringChars.length) {
-            return;
-        }
-
-        for (int i = indexRestItself; i < lesserStringChars.length; i++) {
-            int j = indexRestCompare;
-            while (j < biggerStringChars.length && biggerStringChars[j] != lesserStringChars[i]) {
-                j++;
-            }
-            if (j < biggerStringChars.length) {
-                checkString(s + lesserStringChars[i], i + 1, j + 1);
-            }
-        }
+        return maxLength;
     }
-
-    static Set<Character> getStringChars(String s) {
-        final HashSet<Character> chars = new HashSet<>();
-        for (char c : s.toCharArray()) {
-            chars.add(c);
-        }
-
-        return chars;
-    }
-
-    static String removeCharsFromString(Set<Character> chars, String s) {
-        StringBuilder builder = new StringBuilder();
-        for (char c : s.toCharArray()) {
-            if (chars.contains(c)) {
-                builder.append(c);
-            }
-        }
-
-        return builder.toString();
-    }
-
-    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-//        String s1 = scanner.nextLine();
-//        String s2 = scanner.nextLine();
-//        scanner.close();
 
-        int result = commonChild("ACBDKF", "ABCDMEA");
+        int result = commonChild("ACBDKF", "ABCDMEARTY");
 
         System.out.println(result);
     }
