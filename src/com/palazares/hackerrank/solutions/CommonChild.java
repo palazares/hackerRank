@@ -10,9 +10,11 @@ public class CommonChild {
     static String longestChild = "";
     static char[] biggerStringChars;
     static char[] lesserStringChars;
+    static Set<String> checked;
 
     static int commonChild(String s1, String s2) {
 
+        checked = new HashSet<>();
         longestChildLength = 0;
 
         final Set<Character> string1Chars = getStringChars(s1);
@@ -39,6 +41,10 @@ public class CommonChild {
     }
 
     static void checkString(String s, int indexRestItself, int indexRestCompare) {
+        if (checked.contains(s)) {
+            return;
+        }
+        checked.add(s);
         if (s.length() > longestChildLength) {
             longestChildLength = s.length();
             longestChild = s;
