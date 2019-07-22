@@ -6,7 +6,14 @@ import java.util.Set;
 
 public class CommonChild {
 
+    static int longestChildLength = 0;
+    static String longestChild = "";
+    static char[] biggerStringChars;
+    static char[] lesserStringChars;
+
     static int commonChild(String s1, String s2) {
+
+        longestChildLength = 0;
 
         final Set<Character> string1Chars = getStringChars(s1);
         final Set<Character> string2Chars = getStringChars(s2);
@@ -21,48 +28,38 @@ public class CommonChild {
         String biggerString = newS1.length() > newS2.length() ? newS1 : newS2;
         String lesserString = newS1.length() <= newS2.length() ? newS1 : newS2;
 
-        Set<String> lesserStringSubset = new HashSet<>();
-        lesserStringSubset.add(lesserString);
-        Set<String> biggerStringSubset = new HashSet<>();
-        biggerStringSubset.add(biggerString);
+        lesserStringChars = lesserString.toCharArray();
+        biggerStringChars = biggerString.toCharArray();
 
-        int lengthDifference = biggerString.length() - lesserString.length();
+        checkString("", 0, 0);
 
-        for (int i = lengthDifference; i > 0; i--) {
-            biggerStringSubset = getSubstringsSet(biggerStringSubset);
-        }
+        System.out.println(longestChild);
 
-        for (int i = lesserString.length(); i > 0; i--) {
-            final Set<String> finalBiggerStringSubset = biggerStringSubset;
-            if (lesserStringSubset.stream().anyMatch(s -> finalBiggerStringSubset.contains(s))) {
-                return i;
+        return longestChildLength;
+    }
+
+    static void checkString(String s, int indexRestItself, int indexRestCompare) {
+        if (s.length() > longestChildLength) {
+            longestChildLength = s.length();
+            longestChild = s;
+            if (longestChildLength >= lesserStringChars.length) {
+                return;
             }
-            biggerStringSubset = getSubstringsSet(biggerStringSubset);
-            lesserStringSubset = getSubstringsSet(lesserStringSubset);
         }
 
-        return 1;
-    }
-
-    static Set<String> getSubstringsSet(Set<String> set) {
-        Set<String> resultingSet = new HashSet<>();
-        for (String s : set) {
-            resultingSet.addAll(getSubstringsSet(s));
+        if (indexRestItself >= lesserStringChars.length || indexRestCompare >= biggerStringChars.length) {
+            return;
         }
-        return resultingSet;
-    }
 
-    static Set<String> getSubstringsSet(String s) {
-
-        StringBuilder builder = new StringBuilder();
-        final HashSet<String> strings = new HashSet<>();
-        for (int i = 0; i < s.length() - 1; i++) {
-            strings.add(builder.toString() + s.substring(i + 1));
-            builder.append(s, i, i + 1);
+        for (int i = indexRestItself; i < lesserStringChars.length; i++) {
+            int j = indexRestCompare;
+            while (j < biggerStringChars.length && biggerStringChars[j] != lesserStringChars[i]) {
+                j++;
+            }
+            if (j < biggerStringChars.length) {
+                checkString(s + lesserStringChars[i], i + 1, j + 1);
+            }
         }
-        strings.add(builder.toString());
-
-        return strings;
     }
 
     static Set<Character> getStringChars(String s) {
