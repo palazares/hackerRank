@@ -1,17 +1,32 @@
 package com.palazares.hackerrank.solutions;
 
+import java.util.Arrays;
+
 public class MinimumTimeRequired {
 
     static long minTime(long[] machines, long goal) {
+        Arrays.sort(machines);
         double rawDayPower = calculateRawDayPower(machines);
         long minRawDays = (long) Math.floor(goal / rawDayPower);
-        long volume = calculateVolumeAtDay(machines, minRawDays);
-        long totalDays = minRawDays;
-        while (volume < goal) {
-            totalDays++;
-            volume = calculateVolumeAtDay(machines, totalDays);
+        long maxRawDays = minRawDays + machines[machines.length - 1];
+        long previousMiddle = 0;
+        long middle = 1;
+        long volume = 0;
+
+        while (minRawDays < maxRawDays && previousMiddle != middle) {
+            previousMiddle = middle;
+            middle = (minRawDays + maxRawDays) / 2;
+            volume = calculateVolumeAtDay(machines, middle);
+            if (volume >= goal) {
+                maxRawDays = middle;
+            } else {
+                minRawDays = middle;
+            }
         }
-        return totalDays;
+        if (volume < goal) {
+            middle++;
+        }
+        return middle;
     }
 
     static double calculateRawDayPower(long[] machines) {
@@ -31,10 +46,19 @@ public class MinimumTimeRequired {
     }
 
     public static void main(String[] args) {
-        long[] machines = {2, 3};
-
-        long result = minTime(machines, 5);
-
+        long[] machines = {1, 3, 4};
+        long result = minTime(machines, 10);
         System.out.println(result);
+        System.out.println("Should be: 7");
+
+        machines = new long[]{4, 5, 6};
+        result = minTime(machines, 12);
+        System.out.println(result);
+        System.out.println("Should be: 20");
+
+        machines = new long[]{2, 3};
+        result = minTime(machines, 5);
+        System.out.println(result);
+        System.out.println("Should be: 6");
     }
 }
