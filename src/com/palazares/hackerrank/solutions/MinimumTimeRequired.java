@@ -9,14 +9,7 @@ public class MinimumTimeRequired {
         long totalDays = minRawDays;
         while (volume < goal) {
             totalDays++;
-            for (int j = 0; j < machines.length; j++) {
-                if (totalDays % machines[j] == 0) {
-                    volume++;
-                }
-                if (volume >= goal) {
-                    break;
-                }
-            }
+            volume = calculateVolumeAtDay(machines, totalDays);
         }
         return totalDays;
     }
