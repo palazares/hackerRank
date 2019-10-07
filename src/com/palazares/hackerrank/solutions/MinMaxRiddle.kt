@@ -1,27 +1,53 @@
 package com.palazares.hackerrank.solutions
 
 import java.util.*
-import kotlin.math.min
+import kotlin.math.max
 
 fun riddle(arr: Array<Long>): Array<Long> {
-    var stack = Stack<Long>()
-    var list = mutableListOf(arr.max()!!)
-    arr.forEach { stack.push(it) }
+    val valuesStack = Stack<Long>()
+    val positionStack = Stack<Int>()
+    val pos = Array(arr.size) { 0 }
 
-    while (stack.size > 1){
-        var curMax = 0L;
-        val tmpStack = Stack<Long>()
-        while (stack.size > 1){
-            tmpStack.push(min(stack.pop(), stack.peek()))
-            if (curMax < tmpStack.peek()) curMax = tmpStack.peek()
+    positionStack.push(-1)
+    for (i in arr.indices) {
+        while (!valuesStack.empty() && valuesStack.peek() >= arr[i]) {
+            valuesStack.pop()
+            positionStack.pop()
         }
-        tmpStack.reverse()
-        stack = tmpStack
-        list.add(curMax)
+
+        pos[i] = i - positionStack.peek() - 1
+        valuesStack.push(arr[i])
+        positionStack.push(i)
     }
-    return list.toLongArray().toTypedArray()
+
+    valuesStack.clear()
+    positionStack.clear()
+    positionStack.push(arr.size)
+    for (i in arr.size - 1 downTo 0) {
+        while (!valuesStack.empty() && valuesStack.peek() >= arr[i]) {
+            valuesStack.pop()
+            positionStack.pop()
+        }
+
+        pos[i] += positionStack.peek() - i - 1
+        valuesStack.push(arr[i])
+        positionStack.push(i)
+    }
+
+    val result = Array<Long>(arr.size) { 0 }
+
+    for (i in arr.indices) {
+        result[pos[i]] = max(result[pos[i]], arr[i])
+    }
+
+    for (i in arr.size - 2 downTo 0) {
+        result[i] = max(result[i], result[i + 1])
+    }
+
+    return result
 }
 
 fun main() {
+    // 7,6,4,4,3,2
     println(riddle(arrayOf(3,5,4,7,6,2)).joinToString())
 }
