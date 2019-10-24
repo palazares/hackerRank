@@ -1,111 +1,114 @@
 package com.palazares.hackerrank.solutions;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class BalancedForest {
-    static int[] original;
-    static int[][] edges;
-    static boolean[] visited;
-    static long[] sum;
-    static long bestCandidate;
+    static long mini, sum;
+    static HashSet<Long> s = new HashSet<>();
+    static HashSet<Long> q = new HashSet<>();
 
-    static int balancedForest(int[] c, int[][] e) {
-        int n = c.length;
-        original = c;
-        edges = e;
-        sum = new long[n];
-        visited = new boolean[n];
+    static long balancedForest(int[] node_values, int[][] edges) {
+        s = new HashSet<>();
+        q = new HashSet<>();
 
-        fillSumGraph(0);
+        ArrayList<Node> nodes = new ArrayList<>();
+        for (int i = 0; i < node_values.length; i++) {
+            nodes.add(new Node(node_values[i]));
+        }
 
-        visited = new boolean[n];
-        bestCandidate = sum[0];
+        for (int i = 0; i < edges.length; i++) {
+            int[] edge = edges[i];
+            int a = edge[0] - 1;
+            int b = edge[1] - 1;
+            nodes.get(a).adjacent.add(b);
+            nodes.get(b).adjacent.add(a);
+        }
 
-        mainTraverse(0);
+        mini = sum = dfs(0, nodes);
+        traverse(0, nodes);
 
-        if (bestCandidate == sum[0]) return -1;
-        return (int) (3 * bestCandidate - sum[0]);
+        return mini == sum ? -1 : mini;
     }
 
-    static void mainTraverse(int node) {
-        if (visited[node]) return;
-        visited[node] = true;
-        int n = original.length;
-        for (int i = 0; i < n; i++) {
-            if (edges[node][i] == 0) continue;
-            if (sum[i] < bestCandidate || 3 * sum[i] > sum[0]) {
-                candidateTraverse(node, i, sum[i], new boolean[n]);
-            }
-            if (3 * sum[i] > 2 * sum[0]) {
-                mainTraverse(node);
+    private static void traverse(int p, ArrayList<Node> nodes) {
+        Node node = nodes.get(p);
+        if (node.v2) return;
+        node.v2 = true;
+
+        if (sum % 2 == 0 && node.cost == (sum / 2)) mini = Math.min(mini, sum / 2);
+        if (s.contains(node.cost) || q.contains(2 * node.cost)) {
+            if (3 * node.cost >= sum) mini = Math.min(mini, 3 * node.cost - sum);
+        }
+
+        if (s.contains(sum - 2 * node.cost) || q.contains(sum - node.cost)) {
+            if (3 * node.cost >= sum) mini = Math.min(mini, 3 * node.cost - sum);
+        }
+
+        if ((sum - node.cost) % 2 == 0) {
+            if (s.contains((sum - node.cost) / 2) || q.contains((sum + node.cost) / 2)) {
+                if ((sum - node.cost) / 2 >= node.cost) mini = Math.min(mini, (sum - node.cost) / 2 - node.cost);
             }
         }
+
+        q.add(node.cost);
+
+        for (int i = 0; i < node.adjacent.size(); i++) {
+            traverse(node.adjacent.get(i), nodes);
+        }
+
+        q.remove(node.cost);
+        s.add(node.cost);
     }
 
-    static void candidateTraverse(int node, int candidateNode, long candidateSum, boolean[] candidateVisited) {
-        if (candidateVisited[node] || candidateSum == bestCandidate) return;
-        candidateVisited[node] = true;
-        int n = original.length;
-        for (int i = 0; i < n; i++) {
-            if (edges[node][i] == 0 || i == candidateNode) continue;
-            if (sum[node] - sum[i] == 2 * candidateSum) {
-                bestCandidate = candidateSum;
-                return;
-            }
-            if (sum[i] > candidateSum) {
-                candidateTraverse(i, candidateNode, candidateSum, candidateVisited);
-            }
+    private static long dfs(int p, ArrayList<Node> nodes) {
+        Node node = nodes.get(p);
+        if (node.visited) return 0;
+        node.visited = true;
+        for (int i = 0; i < node.adjacent.size(); i++) {
+            node.cost += dfs(node.adjacent.get(i), nodes);
+        }
+        return node.cost;
+    }
+
+    static class Node {
+        long cost;
+        boolean visited = false, v2 = false;
+        ArrayList<Integer> adjacent = new ArrayList<>();
+
+        public Node(long cost) {
+            this.cost = cost;
         }
     }
-
-    static void fillSumGraph(int node) {
-        if (visited[node]) return;
-        visited[node] = true;
-        int n = original.length;
-        long childrenSum = 0;
-        for (int i = 0; i < n; i++) {
-            if (edges[node][i] == 0) continue;
-            fillSumGraph(i);
-            childrenSum += sum[i];
-        }
-        sum[node] = original[node] + childrenSum;
-    }
-
-    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         int q = scanner.nextInt();
         scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
 
         for (int qItr = 0; qItr < q; qItr++) {
             int n = scanner.nextInt();
             scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
-
             int[] c = new int[n];
-
             String[] cItems = scanner.nextLine().split(" ");
             scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
-
             for (int i = 0; i < n; i++) {
                 int cItem = Integer.parseInt(cItems[i]);
                 c[i] = cItem;
             }
-
-            int[][] edges = new int[n][n];
-
+            int[][] edges = new int[n - 1][2];
             for (int i = 0; i < n - 1; i++) {
                 String[] edgesRowItems = scanner.nextLine().split(" ");
                 scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
-                int firstNode = Integer.parseInt(edgesRowItems[0]) - 1;
-                int secondNode = Integer.parseInt(edgesRowItems[1]) - 1;
-                edges[firstNode][secondNode] = 1;
-                edges[secondNode][firstNode] = 1;
-            }
 
-            int result = balancedForest(c, edges);
+                for (int j = 0; j < 2; j++) {
+                    int edgesItem = Integer.parseInt(edgesRowItems[j]);
+                    edges[i][j] = edgesItem;
+                }
+            }
+            long result = balancedForest(c, edges);
+
             System.out.println(result);
         }
-
         scanner.close();
     }
 }
