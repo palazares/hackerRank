@@ -1,5 +1,7 @@
 package com.palazares.hackerrank.solutions;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Primality {
@@ -14,6 +16,9 @@ public class Primality {
             }
             i++;
         }
+
+        Map<Integer, Integer> x = new HashMap<>();
+        x.computeIfAbsent(1, k -> 2);
         return "Prime";
     }
 
