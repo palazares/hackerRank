@@ -5,14 +5,17 @@ import java.util.*;
 public class DecibinaryNumbers {
     static Map<String, List<String>> cache = new HashMap<>();
 
+    final int MAX_SIZE = 1;
+
     static long decibinaryNumbers(long x) {
+
         return 0;
     }
 
-    static byte[] getBinary(int x){
+    static byte[] getBinary(int x) {
         char[] chars = Integer.toBinaryString(x).toCharArray();
         byte[] binary = new byte[chars.length];
-        for(int i = 0; i < binary.length; i++){
+        for (int i = 0; i < binary.length; i++) {
             binary[i] = (byte) (chars[i] == '1' ? 1 : 0);
         }
         return binary;
