@@ -32,10 +32,10 @@ public class UberStringFormation {
     }
 
     public static void main(String[] args) {
-        //String[] words = {"valya", "lyglb", "vldoh"};
-        String[] words = {"adc", "aec", "efg"};
-        //String target = "val";
-        String target = "ac";
+        String[] words = {"valal", "lyglb", "vldoh"};
+        //String[] words = {"adc", "aec", "efg"};
+        String target = "val";
+        //String target = "ac";
 
         System.out.println(numWays(words, target));
     }
