@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SpiralMatrix {
-    public List<Integer> spiralOrder(int[][] matrix) {
+    public static List<Integer> spiralOrder(int[][] matrix) {
         List<Integer> ans = new ArrayList<>();
         if (matrix.length == 0)
             return ans;
